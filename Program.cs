@@ -1,10 +1,12 @@
+using StringSorting;
+
 internal class Program
 {
     private static void Main(string[] args)
     {
         Console.WriteLine("Enter a string: ");
         var input = Console.ReadLine();
-        if (input == null)
+        if (input == null || input == "")
             return;
         var nonLowercaseEnglish = GetNonLowercaseEnglish(input);
         if (nonLowercaseEnglish.Count() > 0)
@@ -16,6 +18,20 @@ internal class Program
         Console.WriteLine(processedString);
         Console.WriteLine(GenerateOccurencesMessage(processedString));
         Console.WriteLine($"Longest substring = {GetLongestSubstring(processedString, "aeiouy")}");
+        Console.WriteLine("Choose sort algorithm : \n1 - quick sort\n2 - tree sort");
+        switch (Console.ReadKey().KeyChar)
+        {
+            case '1':
+                Console.WriteLine($"\n{processedString.QuickSorted()}");
+                break;
+            case '2':
+                Console.WriteLine($"\n{processedString.TreeSorted()}");
+                break;
+            default:
+                Console.WriteLine("You haven't chose sort algorithm");
+                break;
+        }
+        Console.ReadLine();
     }
 
     private static string InvertAndJoin(string input)
@@ -91,4 +107,5 @@ internal class Program
             return "";
         return input.Substring(left, right - left + 1);
     }
+    
 }
