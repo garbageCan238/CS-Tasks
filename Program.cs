@@ -2,12 +2,10 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        if (args.Length == 0)
-        {
-            Console.WriteLine("");
+        Console.WriteLine("Enter a string: ");
+        var input = Console.ReadLine();
+        if (input == null)
             return;
-        }
-        var input = args[0];
         Console.WriteLine(InvertAndJoin(input));
     }
 
