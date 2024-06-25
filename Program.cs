@@ -16,7 +16,7 @@ internal class Program
         }
         var processedString = InvertAndJoin(input);
         Console.WriteLine(processedString);
-        Console.Write(GenerateOccurencesMessage(processedString));
+        Console.WriteLine(GenerateOccurencesMessage(processedString));
     }
 
     private static string InvertAndJoin(string input)
@@ -59,11 +59,11 @@ internal class Program
 
     private static string GenerateOccurencesMessage(string input)
     {
-        var msg = "";
+        var msg = "Number of occurrences in processed string: ";
         var characterOccurences = CountCharacterOccurrences(input);
         foreach (var character in characterOccurences.Keys)
         {
-            msg += $"{character}: {characterOccurences[character]}\n";
+            msg += $"\n{character}: {characterOccurences[character]}";
         }
         return msg;
     }
