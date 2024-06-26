@@ -6,6 +6,12 @@ internal class Program
         var input = Console.ReadLine();
         if (input == null)
             return;
+        var nonLowercaseEnglish = GetNonLowercaseEnglish(input);
+        if (nonLowercaseEnglish.Count() > 0)
+        {
+            Console.WriteLine($"Invalid characters: {string.Join(", ", nonLowercaseEnglish)}");
+            return;
+        }
         Console.WriteLine(InvertAndJoin(input));
     }
 
@@ -20,5 +26,17 @@ internal class Program
         }
         else
             return new string(input.Reverse().ToArray()) + input;
+    }
+
+    private static HashSet<char> GetNonLowercaseEnglish(string input)
+    {
+        var lowerEnglish = "abcdefghijklmnopqrstuvwxyz";
+        var nonLowerCaseEnglish = new HashSet<char>();
+        foreach (var ch in input)
+        {
+            if (!lowerEnglish.Contains(ch))
+                nonLowerCaseEnglish.Add(ch);
+        }
+        return nonLowerCaseEnglish;
     }
 }
