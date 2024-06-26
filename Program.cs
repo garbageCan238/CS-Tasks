@@ -15,6 +15,7 @@ internal class Program
         var processedString = InvertAndJoin(input);
         Console.WriteLine(processedString);
         Console.WriteLine(GenerateOccurencesMessage(processedString));
+        Console.WriteLine($"Longest substring = {GetLongestSubstring(processedString, "aeiouy")}");
     }
 
     private static string InvertAndJoin(string input)
@@ -64,5 +65,30 @@ internal class Program
             msg += $"\n{character}: {characterOccurences[character]}";
         }
         return msg;
+    }
+
+    private static string GetLongestSubstring(string input, string boundaries) 
+    {
+        var left = -1;
+        var right = -1;
+        for (var i = 0; i < input.Length; i++)
+        {
+            if (boundaries.Contains(input[i]))
+            {
+                left = i;
+                break;
+            }
+        }
+        for (var i = input.Length - 1; i >= 0; i--)
+        {
+            if (boundaries.Contains(input[i]))
+            {
+                right = i;
+                break;
+            }
+        }
+        if (left == -1 || right == -1)
+            return "";
+        return input.Substring(left, right - left + 1);
     }
 }
