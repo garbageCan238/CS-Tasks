@@ -12,7 +12,9 @@ internal class Program
             Console.WriteLine($"Invalid characters: {string.Join(", ", nonLowercaseEnglish)}");
             return;
         }
-        Console.WriteLine(InvertAndJoin(input));
+        var processedString = InvertAndJoin(input);
+        Console.WriteLine(processedString);
+        Console.WriteLine(GenerateOccurencesMessage(processedString));
     }
 
     private static string InvertAndJoin(string input)
@@ -38,5 +40,29 @@ internal class Program
                 nonLowerCaseEnglish.Add(ch);
         }
         return nonLowerCaseEnglish;
+    }
+
+    private static Dictionary<char, int> CountCharacterOccurrences(string input)
+    {
+        var characterOccurences = new Dictionary<char, int>();
+        foreach (var ch in input)
+        {
+            if (characterOccurences.ContainsKey(ch))
+                characterOccurences[ch]++;
+            else
+                characterOccurences.Add(ch, 1);
+        }
+        return characterOccurences;
+    }
+
+    private static string GenerateOccurencesMessage(string input)
+    {
+        var msg = "Number of occurrences in processed string: ";
+        var characterOccurences = CountCharacterOccurrences(input);
+        foreach (var character in characterOccurences.Keys)
+        {
+            msg += $"\n{character}: {characterOccurences[character]}";
+        }
+        return msg;
     }
 }
