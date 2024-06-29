@@ -1,8 +1,9 @@
+using CS_Tasks;
 using StringSorting;
 
-internal class Program
+public class Program
 {
-    private static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         Console.WriteLine("Enter a string: ");
         var input = Console.ReadLine();
@@ -31,7 +32,22 @@ internal class Program
                 Console.WriteLine("You haven't chose sort algorithm");
                 break;
         }
-        Console.ReadLine();
+        int randInt;
+        using var randomService = new RandomService();
+        try
+        {
+            randInt = await randomService.Next(processedString.Length - 1);
+        }
+        catch (HttpRequestException)
+        {
+            Console.WriteLine("Connection failed");
+            randInt = new Random().Next(processedString.Length - 1);
+        }
+        var removedChar = processedString[randInt];
+        Console.WriteLine($"{removedChar} was removed at index {randInt}");
+        Console.WriteLine($"Old string: {processedString}");
+        processedString = processedString.Remove(randInt, 1);
+        Console.WriteLine($"New string: {processedString}");
     }
 
     private static string InvertAndJoin(string input)
