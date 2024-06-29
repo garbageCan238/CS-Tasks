@@ -18,15 +18,15 @@ public class Program
         var processedString = InvertAndJoin(input);
         Console.WriteLine(processedString);
         Console.WriteLine(GenerateOccurencesMessage(processedString));
-        Console.WriteLine($"Longest substring = {GetLongestSubstring(processedString, "aeiouy")}");
+        Console.WriteLine($"Longest substring: {GetLongestSubstring(processedString, "aeiouy")}");
         Console.WriteLine("Choose sort algorithm : \n1 - quick sort\n2 - tree sort");
         switch (Console.ReadKey().KeyChar)
         {
             case '1':
-                Console.WriteLine($"\n{processedString.QuickSorted()}");
+                Console.WriteLine($"\nSorted string: {processedString.QuickSorted()}");
                 break;
             case '2':
-                Console.WriteLine($"\n{processedString.TreeSorted()}");
+                Console.WriteLine($"\nSorted string: {processedString.TreeSorted()}");
                 break;
             default:
                 Console.WriteLine("You haven't chose sort algorithm");
