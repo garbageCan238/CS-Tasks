@@ -18,55 +18,6 @@ namespace StringExtensions
             return new string(array);
         }
 
-        public static string GetLongestSubstring(this string str, string boundaries)
-        {
-            var left = -1;
-            var right = -1;
-            for (var i = 0; i < str.Length; i++)
-            {
-                if (boundaries.Contains(str[i]))
-                {
-                    left = i;
-                    break;
-                }
-            }
-            for (var i = str.Length - 1; i >= 0; i--)
-            {
-                if (boundaries.Contains(str[i]))
-                {
-                    right = i;
-                    break;
-                }
-            }
-            if (left == -1 || right == -1)
-                return "";
-            return str.Substring(left, right - left + 1);
-        }
-
-        public static Dictionary<char, int> CountCharacterOccurrences(this string str)
-        {
-            var characterOccurences = new Dictionary<char, int>();
-            foreach (var ch in str)
-            {
-                if (characterOccurences.ContainsKey(ch))
-                    characterOccurences[ch]++;
-                else
-                    characterOccurences.Add(ch, 1);
-            }
-            return characterOccurences;
-        }
-
-        public static HashSet<char> GetMissingChars(this string str, string mask)
-        {
-            var missingChars = new HashSet<char>();
-            foreach (var ch in str)
-            {
-                if (!mask.Contains(ch))
-                    missingChars.Add(ch);
-            }
-            return missingChars;
-        }
-
         private static char[] TreeSort(char[] array)
         {
             var tree = new Tree(array[0]);
