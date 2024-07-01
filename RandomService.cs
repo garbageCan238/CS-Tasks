@@ -15,12 +15,11 @@ namespace CS_Tasks
 
     public class RandomService : IRandomService
     {
-        private const string baseUrl = "http://www.randomnumberapi.com/";
         private const string pattern = @"\d+";
         private ApiClient client;
         private string endpoint = "api/v1.0/random";
 
-        public RandomService()
+        public RandomService(string baseUrl)
         {
             client = new ApiClient(baseUrl);
         }

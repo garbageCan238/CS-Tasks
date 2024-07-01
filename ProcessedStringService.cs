@@ -11,16 +11,23 @@ namespace CS_Tasks
     {
         private readonly IRandomService randomService;
 
-        public ProcessedStringService(IRandomService randomService)
+        private readonly List<String> blackList;
+
+        public ProcessedStringService(IRandomService randomService, List<string> blackList)
         {
             this.randomService = randomService;
+            this.blackList = blackList;
         }
 
         public async Task ProcessString(ProcessedStringData procesedStringData, string sortMethod)
         {
+            // validation
             var notAllowedChars = GetNonMatchingCharacters(procesedStringData.OriginalString, Constans.englishLower);
             if (notAllowedChars.Count > 0)
                 throw new ArgumentException($"Characters are not allowed: {string.Join(", ", notAllowedChars)}");
+            if (isInBlackList(procesedStringData.OriginalString))
+                throw new ArgumentException($"String {procesedStringData.OriginalString} is in blacklist");
+
             procesedStringData.ProcessedString = InvertAndJoin(procesedStringData.OriginalString);
             procesedStringData.CharacterOccurrences = CountCharacterOccurrences(procesedStringData.ProcessedString);
             procesedStringData.LongestSubstring = GetLongestSubstring(procesedStringData.ProcessedString, Constans.englishVowels);
@@ -39,7 +46,17 @@ namespace CS_Tasks
             return str;
         }
 
-        private HashSet<char> GetNonMatchingCharacters(string str, string allowedChars)
+        private bool isInBlackList(string str)
+        {
+            foreach (string blackListed in blackList)
+            {
+                if (blackListed == str) 
+                    return true;
+            }
+            return false;
+        }
+
+        private static HashSet<char> GetNonMatchingCharacters(string str, string allowedChars)
         {
             var notAllowedChars = new HashSet<char>();
             foreach (var ch in str)

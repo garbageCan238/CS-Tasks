@@ -36,7 +36,7 @@ public class ProcessedStringController : ControllerBase
     ///     }
     ///
     /// </remarks>
-    ///  <response code="400">if there are characters not from lower english alphabet</response>
+    ///  <response code="400">if there are characters not from lower english alphabet or if original string is in blacklist</response>
     [HttpGet]
     public async Task<ActionResult<ProcessedStringData>> GetProcessedStringData([FromQuery] string originalString, [FromQuery] string? sortMethod = "quickSort")
     {

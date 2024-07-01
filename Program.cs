@@ -5,9 +5,18 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IRandomService, RandomService>();
-builder.Services.AddScoped<IProcessedStringService, ProcessedStringService>();
+builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+builder.Services.AddScoped<IRandomService, RandomService>(sp =>
+{
+    string url = builder.Configuration.GetValue<string>("RandomApi");
+    return new RandomService(url);
+});
+builder.Services.AddScoped<IProcessedStringService, ProcessedStringService>(sp =>
+{
+    var blackList = builder.Configuration.GetSection("Settings:BlackList").Get<List<string>>(); ;
+    var randomService = sp.GetRequiredService<IRandomService>();
+    return new ProcessedStringService(randomService, blackList);
+});
 builder.Services.AddSwaggerGen(options =>
 {
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
