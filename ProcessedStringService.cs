@@ -4,29 +4,27 @@ namespace CS_Tasks
 {
     public interface IProcessedStringService
     {
-        Task ProcessString(StringProccession processedString);
-
-        HashSet<char> GetNotAllowedChars(StringProccession processedString, string allowedChars);
+        Task ProcessString(ProcessedStringData procesedStringData);
     }
 
-    public class ProcessedStringService : IProcessedStringService
+    public class ProcessedStringService : IProcessedStringService, IDisposable
     {
-        RandomService randomService = new RandomService();
-        public async Task ProcessString(StringProccession processedString)
+        private readonly RandomService randomService = new RandomService();
+        public async Task ProcessString(ProcessedStringData procesedStringData)
         {
-            var notAllowedChars = GetNotAllowedChars(processedString, "abcdefghijklmnopqrstuvwxyz");
+            var notAllowedChars = GetNotAllowedChars(procesedStringData, "abcdefghijklmnopqrstuvwxyz");
             if (notAllowedChars.Count > 0)
                 throw new Exception($"Characters are not allowed: {string.Join(", ", notAllowedChars)}");
-            InvertAndJoin(processedString);
-            CountCharacterOccurrences(processedString);
-            GetLongestSubstring(processedString, "aeiouy");
-            SortString(processedString);
-            await TruncateString(processedString);
+            InvertAndJoin(procesedStringData);
+            CountCharacterOccurrences(procesedStringData);
+            GetLongestSubstring(procesedStringData, "aeiouy");
+            SortString(procesedStringData);
+            await TruncateString(procesedStringData);
         }
 
-        public HashSet<char> GetNotAllowedChars(StringProccession processedString, string allowedChars)
+        private HashSet<char> GetNotAllowedChars(ProcessedStringData procesedStringData, string allowedChars)
         {
-            var str = processedString.OriginalString;
+            var str = procesedStringData.OriginalString;
             var notAllowedChars = new HashSet<char>();
             foreach (var ch in str)
             {
@@ -36,23 +34,23 @@ namespace CS_Tasks
             return notAllowedChars;
         }
 
-        private void InvertAndJoin(StringProccession processedString)
+        private void InvertAndJoin(ProcessedStringData procesedStringData)
         {
-            var str = processedString.OriginalString;
+            var str = procesedStringData.OriginalString;
             var isEven = str.Length % 2 == 0;
             if (isEven)
             {
                 var firstHalf = str[..(str.Length / 2)];
                 var secondHalf = str.Substring(str.Length / 2, str.Length / 2);
-                processedString.ProcessedString = new string(firstHalf.Reverse().ToArray()) + new string(secondHalf.Reverse().ToArray());
+                procesedStringData.ProcessedString = new string(firstHalf.Reverse().ToArray()) + new string(secondHalf.Reverse().ToArray());
             }
             else
-                processedString.ProcessedString = new string(str.Reverse().ToArray()) + str;
+                procesedStringData.ProcessedString = new string(str.Reverse().ToArray()) + str;
         }
 
-        private void GetLongestSubstring(StringProccession processedString, string boundaries)
+        private void GetLongestSubstring(ProcessedStringData procesedStringData, string boundaries)
         {
-            var str = processedString.ProcessedString;
+            var str = procesedStringData.ProcessedString;
             var left = -1;
             var right = -1;
             for (var i = 0; i < str.Length; i++)
@@ -72,13 +70,13 @@ namespace CS_Tasks
                 }
             }
             if (left == -1 || right == -1)
-                processedString.LongestSubstring = "";
-            processedString.LongestSubstring = str.Substring(left, right - left + 1);
+                procesedStringData.LongestSubstring = "";
+            procesedStringData.LongestSubstring = str.Substring(left, right - left + 1);
         }
 
-        private void CountCharacterOccurrences(StringProccession processedString)
+        private void CountCharacterOccurrences(ProcessedStringData procesedStringData)
         {
-            var str = processedString.ProcessedString;
+            var str = procesedStringData.ProcessedString;
             var characterOccurences = new Dictionary<char, int>();
             foreach (var ch in str)
             {
@@ -87,28 +85,32 @@ namespace CS_Tasks
                 else
                     characterOccurences.Add(ch, 1);
             }
-            processedString.CharacterOccurrences = characterOccurences; ;
+            procesedStringData.CharacterOccurrences = characterOccurences; ;
         }
 
-        private void SortString(StringProccession processedString)
+        private void SortString(ProcessedStringData procesedStringData)
         {
-            processedString.SortedString = processedString.ProcessedString.QuickSorted();
+            procesedStringData.SortedString = procesedStringData.ProcessedString.QuickSorted();
         }
 
-        private async Task TruncateString(StringProccession processedString)
+        private async Task TruncateString(ProcessedStringData procesedStringData)
         {
-            var randInt = 0;
+            int randInt;
             try
             {
-                randInt = await randomService.Next(processedString.ProcessedString.Length - 1);
+                randInt = await randomService.Next(procesedStringData.ProcessedString.Length - 1);
             }
             catch (HttpRequestException)
             {
                 Console.WriteLine("Connection failed");
-                randInt = new Random().Next(processedString.ProcessedString.Length - 1);
+                randInt = new Random().Next(procesedStringData.ProcessedString.Length - 1);
             }
-            var removedChar = processedString.ProcessedString[randInt];
-            processedString.TruncatedString = processedString.ProcessedString.Remove(randInt, 1);
+            procesedStringData.TruncatedString = procesedStringData.ProcessedString.Remove(randInt, 1);
+        }
+
+        public void Dispose()
+        {
+            randomService.Dispose();
         }
     }
 }
