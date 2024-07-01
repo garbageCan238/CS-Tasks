@@ -38,4 +38,5 @@ app.UseRewriter(new RewriteOptions().AddRedirect("^$", "swagger"));
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<RequestTrackingMiddleware>(builder.Configuration.GetValue<int>("ParallelLimit"));
 app.Run();
