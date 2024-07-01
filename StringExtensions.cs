@@ -1,7 +1,6 @@
-﻿
-namespace StringSorting
+﻿namespace StringExtensions
 {
-    public static class StringSortingExtensions
+    public static class StringExtensions
     {
 
         public static string QuickSorted(this string str)
@@ -30,7 +29,7 @@ namespace StringSorting
             return list.ToArray();
         }
 
-        internal class Tree
+        private class Tree
         {
             internal Tree? left;
             internal Tree? right;
