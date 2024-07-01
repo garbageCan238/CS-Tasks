@@ -1,8 +1,19 @@
-﻿using System.Text.RegularExpressions;
+﻿using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using System.Text.RegularExpressions;
 
 namespace CS_Tasks
 {
-    public class RandomService : IDisposable
+
+    public interface IRandomService: IDisposable
+    {
+        public Task<int> Next();
+
+        public Task<int> Next(int maxValue);
+
+        public Task<int> Next(int minValue, int maxValue);
+    }
+
+    public class RandomService : IRandomService
     {
         private const string baseUrl = "http://www.randomnumberapi.com/";
         private const string pattern = @"\d+";

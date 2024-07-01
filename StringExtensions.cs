@@ -1,5 +1,4 @@
-﻿
-namespace StringExtensions
+﻿namespace StringExtensions
 {
     public static class StringExtensions
     {
