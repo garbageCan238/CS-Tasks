@@ -22,20 +22,20 @@ namespace CS_Tasks
         public async Task ProcessString(ProcessedStringData procesedStringData, string sortMethod)
         {
             // validation
-            var notAllowedChars = GetNonMatchingCharacters(procesedStringData.OriginalString, Constans.englishLower);
+            var notAllowedChars = GetNonLowercaseEnglish(procesedStringData.OriginalString);
             if (notAllowedChars.Count > 0)
                 throw new ArgumentException($"Characters are not allowed: {string.Join(", ", notAllowedChars)}");
-            if (isInBlackList(procesedStringData.OriginalString))
+            if (IsInBlackList(procesedStringData.OriginalString))
                 throw new ArgumentException($"String {procesedStringData.OriginalString} is in blacklist");
 
             procesedStringData.ProcessedString = InvertAndJoin(procesedStringData.OriginalString);
             procesedStringData.CharacterOccurrences = CountCharacterOccurrences(procesedStringData.ProcessedString);
-            procesedStringData.LongestSubstring = GetLongestSubstring(procesedStringData.ProcessedString, Constans.englishVowels);
-            procesedStringData.SortedString = SortProcessedString(procesedStringData.ProcessedString, sortMethod);
+            procesedStringData.LongestSubstring = GetLongestVowelSubstring(procesedStringData.ProcessedString);
+            procesedStringData.SortedString = SortString(procesedStringData.ProcessedString, sortMethod);
             procesedStringData.TruncatedString = await TruncateString(procesedStringData.ProcessedString);
         }
 
-        private static string SortProcessedString(string str, string sortMethod)
+        public static string SortString(string str, string sortMethod)
         {
             if (sortMethod == "treeSort")
                 str = str.TreeSorted();
@@ -46,7 +46,7 @@ namespace CS_Tasks
             return str;
         }
 
-        private bool isInBlackList(string str)
+        private bool IsInBlackList(string str)
         {
             foreach (string blackListed in blackList)
             {
@@ -56,7 +56,7 @@ namespace CS_Tasks
             return false;
         }
 
-        private static HashSet<char> GetNonMatchingCharacters(string str, string allowedChars)
+        private static HashSet<char> ValidateString(string str, string allowedChars)
         {
             var notAllowedChars = new HashSet<char>();
             foreach (var ch in str)
@@ -67,7 +67,7 @@ namespace CS_Tasks
             return notAllowedChars;
         }
 
-        private static string InvertAndJoin(string str)
+        public static string InvertAndJoin(string str)
         {
             var isEven = str.Length % 2 == 0;
             if (isEven)
@@ -79,7 +79,15 @@ namespace CS_Tasks
             else
                 return new string(str.Reverse().ToArray()) + str;
         }
+        public static string GetLongestVowelSubstring(string str)
+        {
+            return GetLongestSubstring(str, Constans.englishVowels);
+        }
 
+        public static HashSet<char> GetNonLowercaseEnglish(string str)
+        {
+            return ValidateString(str, Constans.englishLower);
+        }
         private static string GetLongestSubstring(string str, string boundaries)
         {
             var left = -1;
@@ -105,7 +113,7 @@ namespace CS_Tasks
             return str.Substring(left, right - left + 1);
         }
 
-        private static Dictionary<char, int> CountCharacterOccurrences(string str)
+        public static Dictionary<char, int> CountCharacterOccurrences(string str)
         {
             var characterOccurences = new Dictionary<char, int>();
             foreach (var ch in str)
